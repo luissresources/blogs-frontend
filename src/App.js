@@ -6,6 +6,7 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import BlogForm from './components/forms/BlogForm'
 import './App.css'
+import Togglable from './components/Togglable'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
@@ -15,10 +16,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -53,7 +50,7 @@ const App = () => {
         setSuccessMessage(null)
       },5000)
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setErrorMessage('Wrong username or password')
       setTimeout(() => {
         setErrorMessage(null)
       }, 5000)
@@ -68,39 +65,6 @@ const App = () => {
       setSuccessMessage(null)
     },5000)
   }
-
-  const addBlog = e => {
-    e.preventDefault()
-    const newBlog = {
-      title,
-      author,
-      url
-    }
-    blogService.create(newBlog)
-      .then( () => {
-        setSuccessMessage(`Blog - ${title}: Added`)
-        setTimeout(() => {
-          setSuccessMessage(null)
-        },5000)
-        blogService.getAll()
-          .then(result => {
-            setBlogs(result)
-          })
-      })
-      .catch( error => {
-        setErrorMessage('Bad request')
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-      })
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-  }
-
-  const onChangeTitle = e => setTitle(e.target.value)
-  const onChangeUrl = e => setUrl(e.target.value)
-  const onChangeAuthor = e => setAuthor(e.target.value)
 
   return (
     <div>
@@ -127,15 +91,13 @@ const App = () => {
             </div>
             <div>
               <h3>add blog</h3>
-              <BlogForm 
-                author = { author }
-                onChangeAuthor = { onChangeAuthor }
-                title = { title }
-                onChangeTitle  = { onChangeTitle }
-                url = { url }
-                onChangeUrl = { onChangeUrl }
-                addBlog = { addBlog }
-              />
+              <Togglable buttonLabel = 'new blog'>
+                <BlogForm 
+                  setBlogs = { setBlogs }
+                  setErrorMessage = { setErrorMessage }
+                  setSuccessMessage = { setSuccessMessage }
+                />
+              </Togglable>
             </div>
             <div>
               <h2>blogs list:</h2>

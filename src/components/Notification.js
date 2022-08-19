@@ -1,7 +1,6 @@
 import React from 'react'
 
 const Notification = ({ message, type }) => {
-  console.log(message,type)
   if (message === null) {
     return null
   }
