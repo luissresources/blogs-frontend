@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import LoginForm from './components/forms/LoginForm'
@@ -17,7 +17,9 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  useEffect(() => {
+  const blogFormRef = useRef()
+
+  useEffect( () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
@@ -102,7 +104,14 @@ const App = () => {
             <div>
               <h2>blogs list:</h2>
               {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog} />
+                <div key={blog.id}>
+                  <div>
+                    <Blog 
+                      blog={blog}
+                      setBlogs={setBlogs}
+                    />
+                  </div>
+                </div>
               )}
             </div>
           </>
