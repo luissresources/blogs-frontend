@@ -82,9 +82,9 @@ const App = () => {
           <LoginForm
             handleLogin= { handleLogin }
             username = { username }
-            setUsername = { setUsername }
+            handleUsernameChange = { ({ target }) => setUsername(target.value) }
             password = { password }
-            setPassword = { setPassword }
+            handlePasswordChange = { ({ target }) => setUsername(target.value) }
           />
         : 
           <>
@@ -95,9 +95,9 @@ const App = () => {
               <h3>add blog</h3>
               <Togglable buttonLabel = 'new blog'>
                 <BlogForm 
-                  setBlogs = { setBlogs }
-                  setErrorMessage = { setErrorMessage }
-                  setSuccessMessage = { setSuccessMessage }
+                  handleBlogs = { (arrBlogs) => setBlogs(arrBlogs)   }
+                  handleErrorMessage = { (message) => setErrorMessage(message) }
+                  handleSuccessMessage = { (message) => setSuccessMessage(message) }
                 />
               </Togglable>
             </div>
@@ -108,7 +108,9 @@ const App = () => {
                   <div>
                     <Blog 
                       blog={blog}
-                      setBlogs={setBlogs}
+                      handleBlogs = { (arrBlogs) => setBlogs(arrBlogs)   }
+                      handleErrorMessage = { (message) => setErrorMessage(message) }
+                      handleSuccessMessage = { (message) => setSuccessMessage(message) }
                     />
                   </div>
                 </div>
