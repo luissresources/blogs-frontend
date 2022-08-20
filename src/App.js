@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import LoginForm from './components/forms/LoginForm'
@@ -17,12 +17,12 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  const blogFormRef = useRef()
+  // const blogFormRef = useRef()
 
   useEffect( () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -42,7 +42,7 @@ const App = () => {
       })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -59,7 +59,7 @@ const App = () => {
     }
   }
 
-  const handleLogout = e => {
+  const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
     setSuccessMessage('logout')
@@ -72,51 +72,51 @@ const App = () => {
     <div>
       <h1>Blogs</h1>
       <div>
-      <Notification 
-        message={successMessage ? successMessage : errorMessage ? errorMessage : null}
-        type={successMessage ? 'success' : errorMessage ? 'error' : null }    
-      />
+        <Notification
+          message={successMessage ? successMessage : errorMessage ? errorMessage : null}
+          type={successMessage ? 'success' : errorMessage ? 'error' : null }
+        />
       </div>
-      { user === null 
-        ? 
-          <LoginForm
-            handleLogin= { handleLogin }
-            username = { username }
-            handleUsernameChange = { ({ target }) => setUsername(target.value) }
-            password = { password }
-            handlePasswordChange = { ({ target }) => setUsername(target.value) }
-          />
-        : 
-          <>
-            <div>
-              <p>{ user.name } logged in</p><button onClick={ handleLogout }>logout</button>
-            </div>
-            <div>
-              <h3>add blog</h3>
-              <Togglable buttonLabel = 'new blog'>
-                <BlogForm 
-                  handleBlogs = { (arrBlogs) => setBlogs(arrBlogs)   }
-                  handleErrorMessage = { (message) => setErrorMessage(message) }
-                  handleSuccessMessage = { (message) => setSuccessMessage(message) }
-                />
-              </Togglable>
-            </div>
-            <div>
-              <h2>blogs list:</h2>
-              {blogs.map(blog =>
-                <div key={blog.id}>
-                  <div>
-                    <Blog 
-                      blog={blog}
-                      handleBlogs = { (arrBlogs) => setBlogs(arrBlogs)   }
-                      handleErrorMessage = { (message) => setErrorMessage(message) }
-                      handleSuccessMessage = { (message) => setSuccessMessage(message) }
-                    />
-                  </div>
+      { user === null
+        ?
+        <LoginForm
+          handleLogin= { handleLogin }
+          username = { username }
+          handleUsernameChange = { ({ target }) => setUsername(target.value) }
+          password = { password }
+          handlePasswordChange = { ({ target }) => setUsername(target.value) }
+        />
+        :
+        <>
+          <div>
+            <p>{ user.name } logged in</p><button onClick={ handleLogout }>logout</button>
+          </div>
+          <div>
+            <h3>add blog</h3>
+            <Togglable buttonLabel = 'new blog'>
+              <BlogForm
+                handleBlogs = { (arrBlogs) => setBlogs(arrBlogs)   }
+                handleErrorMessage = { (message) => setErrorMessage(message) }
+                handleSuccessMessage = { (message) => setSuccessMessage(message) }
+              />
+            </Togglable>
+          </div>
+          <div>
+            <h2>blogs list:</h2>
+            {blogs.map(blog =>
+              <div key={blog.id}>
+                <div>
+                  <Blog
+                    blog={blog}
+                    handleBlogs = { (arrBlogs) => setBlogs(arrBlogs)   }
+                    handleErrorMessage = { (message) => setErrorMessage(message) }
+                    handleSuccessMessage = { (message) => setSuccessMessage(message) }
+                  />
                 </div>
-              )}
-            </div>
-          </>
+              </div>
+            )}
+          </div>
+        </>
       }
     </div>
   )

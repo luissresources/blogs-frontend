@@ -3,7 +3,7 @@ import blogService from '../services/blogs'
 import './Blog.css'
 import PropTypes from 'prop-types'
 
-const Blog = ({blog, handleBlogs, handleSuccessMessage, handleErrorMessage}) => {
+const Blog = ({ blog, handleBlogs, handleSuccessMessage }) => {
 
   const [visible, setVisible] = useState(false)
 
@@ -13,32 +13,30 @@ const Blog = ({blog, handleBlogs, handleSuccessMessage, handleErrorMessage}) => 
     setVisible(!visible)
   }
 
-  const styleSingleBlogList = { 
-    border: '1px solid black', 
-    padding: '0.5rem', 
+  const styleSingleBlogList = {
+    border: '1px solid black',
+    padding: '0.5rem',
     backgroundColor: '#F6F5F5',
     margin: '0.5rem 0'
   }
 
   const addLike = async () => {
-    console.log({ blog })
     const newObject = {
       title : blog.title,
       author: blog.author,
       url: blog.url,
       likes: blog.likes += 1
     }
-    console.log({ newObject })
     await blogService
-    .update(blog.id, newObject)
+      .update(blog.id, newObject)
     const updateBlogs = await blogService.getAll()
-    handleBlogs(updateBlogs)  
+    handleBlogs(updateBlogs)
   }
 
   const deleteBlog = async () => {
     if(window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       await blogService
-      .remove(blog.id)
+        .remove(blog.id)
       handleSuccessMessage(`Item "${blog.title}" deleted`)
       const blogs = await blogService.getAll()
       handleBlogs(blogs)
@@ -48,21 +46,21 @@ const Blog = ({blog, handleBlogs, handleSuccessMessage, handleErrorMessage}) => 
   return (
     <div style={ styleSingleBlogList }>
       <p>{blog.title} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button></p>
-     <div style={showWhenVisible}>
-      <p>{blog.author}</p>
-      <p>{blog.url}</p>
-      <p>{blog.likes} <span><button onClick={addLike}>like</button></span></p>
-      <button className='btnDelete' onClick={deleteBlog}>delete</button>
-     </div>
-    </div>  
+      <div style={showWhenVisible}>
+        <p>{blog.author}</p>
+        <p>{blog.url}</p>
+        <p>{blog.likes} <span><button onClick={addLike}>like</button></span></p>
+        <button className='btnDelete' onClick={deleteBlog}>delete</button>
+      </div>
+    </div>
   )
 }
 
 Blog.propTypes = {
   blog : PropTypes.object,
   handleBlogs : PropTypes.func.isRequired,
-  handleSuccessMessage : PropTypes.func.isRequired, 
-  handleErrorMessage : PropTypes.func.isRequired
+  handleSuccessMessage : PropTypes.func,
+  handleErrorMessage : PropTypes.func
 }
 
 export default Blog

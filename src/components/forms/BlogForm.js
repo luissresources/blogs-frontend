@@ -16,19 +16,19 @@ const BlogForm = ({ handleBlogs, handleErrorMessage, handleSuccessMessage }) => 
       url
     }
     await blogService.create(newBlog)
-      handleSuccessMessage(`Blog - ${title}: Added`)
-      setTimeout(() => {
-        handleSuccessMessage(null)
-      },5000)
+    handleSuccessMessage(`Blog - ${title}: Added`)
+    setTimeout(() => {
+      handleSuccessMessage(null)
+    },5000)
     const result = await blogService.getAll()
-      try {
-        handleBlogs(result)
-      } catch (exception) {
-        handleErrorMessage('Bad request')
-        setTimeout(() => {
-          handleErrorMessage(null)
-        }, 5000)
-      }
+    try {
+      handleBlogs(result)
+    } catch (exception) {
+      handleErrorMessage('Bad request')
+      setTimeout(() => {
+        handleErrorMessage(null)
+      }, 5000)
+    }
 
     setTitle('')
     setAuthor('')
@@ -58,9 +58,9 @@ const BlogForm = ({ handleBlogs, handleErrorMessage, handleSuccessMessage }) => 
   )
 }
 
-BlogForm.propTypes = { 
-  handleBlogs : PropTypes.func.isRequired, 
-  handleErrorMessage: PropTypes.func.isRequired, 
+BlogForm.propTypes = {
+  handleBlogs : PropTypes.func.isRequired,
+  handleErrorMessage: PropTypes.func.isRequired,
   handleSuccessMessage: PropTypes.func.isRequired
 }
 

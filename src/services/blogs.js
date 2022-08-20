@@ -39,10 +39,7 @@ const update = async (id, newObject) => {
     headers: { Authorization: token },
   }
 
-  console.log({ baseUrl }, { id }, typeof id, `${ baseUrl } /${id}`,)
-
   const request = await axios.put(`${ baseUrl }/${id}`, newObject, config)
-  console.log({ request })
   return request.data
 }
 
@@ -51,8 +48,7 @@ const remove = async(id) => {
     headers: { Authorization: token },
   }
 
-  const request = await axios.delete(`${baseUrl}/${id}`, config)
-  console.log('deleted')
+  await axios.delete(`${baseUrl}/${id}`, config)
 }
 
 const blogService = { getAll, create, update, remove, setToken }

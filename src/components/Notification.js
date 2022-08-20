@@ -18,4 +18,4 @@ Notification.propTypes = {
   type: PropTypes.string
 }
 
-export default Notification;
+export default Notification
