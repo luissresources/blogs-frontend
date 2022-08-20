@@ -9,7 +9,20 @@ const setToken = newToken => {
 
 const getAll = async () => {
   const request = await axios.get(baseUrl)
-  return request.data
+
+  const compareLikes = (a, b) => {
+    if (a.likes  < b.likes) {
+      return -1
+    }
+
+    if (a.likes > b.likes) {
+      return 1
+    }
+
+    return 0
+  }
+
+  return request.data.sort(compareLikes)
 }
 
 const create = async newObject => {
