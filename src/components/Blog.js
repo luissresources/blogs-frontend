@@ -3,7 +3,7 @@ import blogService from '../services/blogs'
 import './Blog.css'
 import PropTypes from 'prop-types'
 
-const Blog = ({ blog, handleBlogs, handleSuccessMessage }) => {
+const Blog = ({ blog, handleBlogs, handleSuccessMessage, addLike }) => {
 
   const [visible, setVisible] = useState(false)
 
@@ -20,19 +20,6 @@ const Blog = ({ blog, handleBlogs, handleSuccessMessage }) => {
     margin: '0.5rem 0'
   }
 
-  const addLike = async () => {
-    const newObject = {
-      title : blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: blog.likes += 1
-    }
-    await blogService
-      .update(blog.id, newObject)
-    const updateBlogs = await blogService.getAll()
-    handleBlogs(updateBlogs)
-  }
-
   const deleteBlog = async () => {
     if(window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       await blogService
@@ -44,12 +31,11 @@ const Blog = ({ blog, handleBlogs, handleSuccessMessage }) => {
   }
 
   return (
-    <div style={ styleSingleBlogList }>
-      <p>{blog.title} <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button></p>
-      <div style={showWhenVisible}>
-        <p>{blog.author}</p>
+    <div style={ styleSingleBlogList } className='singleBlog'>
+      <p>{blog.title} - <span>{blog.author}</span> <button onClick={toggleVisibility} className='btnShowAndHide'>{visible ? 'hide' : 'view'}</button></p>
+      <div style={showWhenVisible} className='contentBlogHidden'>
         <p>{blog.url}</p>
-        <p>{blog.likes} <span><button onClick={addLike}>like</button></span></p>
+        <p>{blog.likes} <span><button onClick={addLike} className='btnLike'>like</button></span></p>
         <button className='btnDelete' onClick={deleteBlog}>delete</button>
       </div>
     </div>
@@ -58,7 +44,7 @@ const Blog = ({ blog, handleBlogs, handleSuccessMessage }) => {
 
 Blog.propTypes = {
   blog : PropTypes.object,
-  handleBlogs : PropTypes.func.isRequired,
+  handleBlogs : PropTypes.func,
   handleSuccessMessage : PropTypes.func,
   handleErrorMessage : PropTypes.func
 }
