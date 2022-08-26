@@ -17,10 +17,16 @@ const App = () => {
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
-  useEffect(() => {
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+
+  // const blogFormRef = useRef()
+
+  useEffect( () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -32,6 +38,27 @@ const App = () => {
     }
   }, [])
 
+  const addBlog = async ( newBlog ) => {
+    await blogService.create(newBlog)
+    setSuccessMessage(`Blog - ${title}: Added`)
+    setTimeout(() => {
+      setSuccessMessage(null)
+    },5000)
+    const result = await blogService.getAll()
+    try {
+      setBlogs(result)
+    } catch (exception) {
+      setErrorMessage('Bad request')
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }
+
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+  }
+
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -40,7 +67,7 @@ const App = () => {
       })
       window.localStorage.setItem(
         'loggedBlogappUser', JSON.stringify(user)
-      ) 
+      )
       blogService.setToken(user.token)
       setUser(user)
       setUsername('')
@@ -57,7 +84,7 @@ const App = () => {
     }
   }
 
-  const handleLogout = e => {
+  const handleLogout = () => {
     window.localStorage.removeItem('loggedBlogappUser')
     setUser(null)
     setSuccessMessage('logout')
@@ -66,46 +93,75 @@ const App = () => {
     },5000)
   }
 
+  const onChangeTitle = e => setTitle(e.target.value)
+  const onChangeUrl = e => setUrl(e.target.value)
+  const onChangeAuthor = e => setAuthor(e.target.value)
+
+  const addLike = async (blog) => {
+    const newObject = {
+      title : blog.title,
+      author: blog.author,
+      url: blog.url,
+      likes: blog.likes += 1
+    }
+    await blogService
+      .update(blog.id, newObject)
+    const updateBlogs = await blogService.getAll()
+    setBlogs(updateBlogs)
+  }
+
   return (
     <div>
       <h1>Blogs</h1>
       <div>
-      <Notification 
-        message={successMessage ? successMessage : errorMessage ? errorMessage : null}
-        type={successMessage ? 'success' : errorMessage ? 'error' : null }    
-      />
+        <Notification
+          message={successMessage ? successMessage : errorMessage ? errorMessage : null}
+          type={successMessage ? 'success' : errorMessage ? 'error' : null }
+        />
       </div>
-      { user === null 
-        ? 
-          <LoginForm
-            handleLogin= { handleLogin }
-            username = { username }
-            setUsername = { setUsername }
-            password = { password }
-            setPassword = { setPassword }
-          />
-        : 
-          <>
-            <div>
-              <p>{ user.name } logged in</p><button onClick={ handleLogout }>logout</button>
-            </div>
-            <div>
-              <h3>add blog</h3>
-              <Togglable buttonLabel = 'new blog'>
-                <BlogForm 
-                  setBlogs = { setBlogs }
-                  setErrorMessage = { setErrorMessage }
-                  setSuccessMessage = { setSuccessMessage }
+      { user === null
+        ?
+        <LoginForm
+          handleLogin= { handleLogin }
+          username = { username }
+          handleUsernameChange = { ({ target }) => setUsername(target.value) }
+          password = { password }
+          handlePasswordChange = { ({ target }) => setPassword(target.value) }
+        />
+        :
+        <>
+          <div>
+            <p>{ user.name } logged in</p><button onClick={ handleLogout }>logout</button>
+          </div>
+          <div>
+            <h3>add blog</h3>
+            <Togglable buttonLabel = 'new blog'>
+              <BlogForm
+                createBlog={addBlog}
+                title={title}
+                onChangeTitle={onChangeTitle}
+                url={url}
+                onChangeUrl={onChangeUrl}
+                author={author}
+                onChangeAuthor={onChangeAuthor}
+              />
+            </Togglable>
+          </div>
+          <div>
+            <h2>blogs list:</h2>
+            {blogs.map(blog =>
+              <div key={blog.id}>
+                <Blog
+                  blog={blog}
+                  handleBlogs = { (arrBlogs) => setBlogs(arrBlogs)   }
+                  handleErrorMessage = { (message) => setErrorMessage(message) }
+                  handleSuccessMessage = { (message) => setSuccessMessage(message) }
+                  addLike = { () => addLike(blog) }
                 />
-              </Togglable>
-            </div>
-            <div>
-              <h2>blogs list:</h2>
-              {blogs.map(blog =>
-                <Blog key={blog.id} blog={blog} />
-              )}
-            </div>
-          </>
+              </div>
+            )}
+          </div>
+        </>
       }
     </div>
   )

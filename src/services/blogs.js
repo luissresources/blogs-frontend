@@ -7,9 +7,22 @@ const setToken = newToken => {
   token = `bearer ${newToken}`
 }
 
-const getAll = () => {
-  const request = axios.get(baseUrl)
-  return request.then(response => response.data)
+const getAll = async () => {
+  const request = await axios.get(baseUrl)
+
+  const compareLikes = (a, b) => {
+    if (a.likes  < b.likes) {
+      return 1
+    }
+
+    if (a.likes > b.likes) {
+      return -1
+    }
+
+    return 0
+  }
+
+  return request.data.sort(compareLikes)
 }
 
 const create = async newObject => {
@@ -21,11 +34,23 @@ const create = async newObject => {
   return response.data
 }
 
-const update = (id, newObject) => {
-  const request = axios.put(`${ baseUrl } /${id}`, newObject)
-  return request.then(response => response.data)
+const update = async (id, newObject) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  const request = await axios.put(`${ baseUrl }/${id}`, newObject, config)
+  return request.data
 }
 
-const blogService = { getAll, create, update, setToken }
+const remove = async(id) => {
+  const config = {
+    headers: { Authorization: token },
+  }
+
+  await axios.delete(`${baseUrl}/${id}`, config)
+}
+
+const blogService = { getAll, create, update, remove, setToken }
 
 export default blogService
