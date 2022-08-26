@@ -24,7 +24,7 @@ body {
   }
   
   .error {
-    color: red;
+    color: rgb(255,0,0);
     background: lightgrey;
     font-size: 20px;
     border-style: solid;

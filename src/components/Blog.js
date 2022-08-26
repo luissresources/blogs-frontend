@@ -35,7 +35,7 @@ const Blog = ({ blog, handleBlogs, handleSuccessMessage, addLike }) => {
       <p>{blog.title} - <span>{blog.author}</span> <button onClick={toggleVisibility} className='btnShowAndHide'>{visible ? 'hide' : 'view'}</button></p>
       <div style={showWhenVisible} className='contentBlogHidden'>
         <p>{blog.url}</p>
-        <p>{blog.likes} <span><button onClick={addLike} className='btnLike'>like</button></span></p>
+        <p> <span className='numberLikes'>{blog.likes}</span> <span><button onClick={addLike} className='btnLike'>like</button></span></p>
         <button className='btnDelete' onClick={deleteBlog}>delete</button>
       </div>
     </div>
@@ -46,7 +46,7 @@ Blog.propTypes = {
   blog : PropTypes.object,
   handleBlogs : PropTypes.func,
   handleSuccessMessage : PropTypes.func,
-  handleErrorMessage : PropTypes.func
+  addLike : PropTypes.func
 }
 
 export default Blog
